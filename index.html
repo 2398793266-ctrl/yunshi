@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111b16"><title>玄枢 · 时序罗盘</title>
+<style>
+:root{--bg:#111b16;--panel:#1b2921;--gold:#d8bd7c;--text:#eee9dc;--muted:#a9b3a6;--line:#485742}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#304333 0,var(--bg) 66%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:auto;padding:22px 16px 40px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:18px}.brand{font-size:21px;letter-spacing:.16em}.sub{font-size:10px;letter-spacing:.2em;color:var(--muted);margin-top:6px}.clock{text-align:right;color:var(--gold);font-variant-numeric:tabular-nums;font-size:20px}.date{font-size:11px;color:var(--muted);margin-top:5px}h1{font-size:clamp(25px,4vw,37px);font-weight:500;letter-spacing:.06em;margin:24px 0 8px}.intro{font-size:13px;line-height:1.8;color:var(--muted);max-width:780px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:19px}.card{min-width:0;background:#1b2921ef;border:1px solid #586447;border-radius:5px;padding:18px}.heading{font-size:13px;color:var(--gold);letter-spacing:.14em;margin-bottom:15px;display:flex;justify-content:space-between;gap:8px}.tiny{font-size:10px;color:var(--muted);letter-spacing:0}.compass{width:min(100%,320px);aspect-ratio:1;border:1px solid var(--gold);border-radius:50%;margin:10px auto 16px;position:relative;background:radial-gradient(circle,#18241c 0 27%,#8f7c4e 27.4% 28%,#1c2b21 28.4% 48%,#8f7c4e 48.4% 48.8%,#18241c 49.2% 70%,#8f7c4e 70.4% 70.8%,#1b2921 71.2%);box-shadow:inset 0 0 30px #0a100c}.compass:before{content:"";position:absolute;inset:8%;border:1px solid #9e8955;border-radius:50%;opacity:.45}.dir{position:absolute;transform:translate(-50%,-50%);text-align:center;font-size:11px;color:var(--muted);z-index:1;min-width:38px;white-space:nowrap;line-height:1.25;pointer-events:none}.dir b{display:block;font-size:16px;color:var(--gold);font-weight:500}.dir.active b{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#a75340;color:white;margin:0 auto 2px;font-size:14px}.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;border:1px solid #8e7948;background:#142019;border-radius:50%;width:34%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;flex-direction:column}.yin{font-size:37px;color:var(--gold);line-height:1}.center small{font-size:10px;color:var(--muted);margin-top:6px}.scoreline{display:flex;align-items:center;gap:12px;margin:16px 0}.score{font-size:37px;color:var(--gold);font-weight:300}.track{height:4px;flex:1;background:#354438}.track span{display:block;height:100%;background:var(--gold)}.advice{display:grid;grid-template-columns:1fr 1fr;gap:9px}.item{padding:12px;background:#101a1677;border:1px solid #3e4c3d;min-width:0}.item label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.item strong{font-size:14px;color:var(--gold);font-weight:500}.item p{font-size:12px;line-height:1.7;color:#d0d6c9;margin:7px 0 0}.muted{font-size:11px;color:var(--muted);line-height:1.8}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:block;color:var(--muted);font-size:11px;margin:10px 0 6px}input,button{font:inherit}input{width:100%;padding:10px;background:#101a16;border:1px solid #586447;border-radius:3px;color:var(--text)}button{width:100%;margin-top:13px;padding:12px;background:var(--gold);color:#172219;border:0;border-radius:3px;font-weight:600;cursor:pointer}.result{margin-top:12px;padding:12px;background:#101a1677;border:1px solid #3e4c3d;font-size:13px;line-height:2;overflow-wrap:anywhere}.footer{border-top:1px solid var(--line);padding-top:13px;margin-top:18px;color:#8b9688;font-size:10px;line-height:1.8}@media(max-width:650px){main{padding:17px 12px 30px}.grid{grid-template-columns:1fr}.card{padding:15px}.brand{font-size:17px}.clock{font-size:16px}}
+</style></head><body><main>
+<header class="top"><div><div class="brand">玄枢 · 时序罗盘</div><div class="sub">TIME · ORIENTATION · REFLECTION</div></div><div class="clock"><div id="clock">--:--:--</div><div id="date" class="date">正在读取本地时间</div></div></header>
+<h1>顺时而行，择方而动。</h1><div class="intro">把传统干支、五行与八方意象融入每日仪式感。时间来自你的设备，打开文件即可离线使用。每日运势提示属于文化体验与自我反思，不是确定性预测。</div>
+<div class="grid">
+<section class="card"><div class="heading">八方罗盘 <span class="tiny">北在上 · 方位示意</span></div><div class="compass"><div id="dirs"></div><div class="center"><div class="yin">☯</div><small id="ganzhi">时序有常</small></div></div><div id="directionNote" class="muted">今日关注方位会随日期变化。</div></section>
+<section class="card"><div class="heading">今日时运签 <span id="weekday" class="tiny"></span></div><div class="scoreline"><div class="score"><span id="score">72</span><span style="font-size:11px"> / 100</span></div><div class="track"><span id="bar" style="width:72%"></span></div></div><div class="advice"><div class="item"><label>今日关键词</label><strong id="key">稳中求进</strong><p id="keydesc">先完成重要的一步。</p></div><div class="item"><label>参考方位</label><strong id="way">东方 · 震木</strong><p id="waydesc">适合开启计划、整理思路。</p></div><div class="item"><label>适合做</label><strong id="do">整理与沟通</strong><p id="dodesc">先梳理信息，再推进关键一步。</p></div><div class="item"><label>提醒自己</label><strong id="avoid">勿急于定论</strong><p id="avoiddesc">重要决定多核对一次事实。</p></div></div><p class="muted" id="hour">时辰提示会显示在这里。</p></section>
+<section class="card"><div class="heading">简式四柱 <span class="tiny">学习演示版</span></div><div class="row"><div><label class="field" for="birth">出生日期（公历）</label><input id="birth" type="date"></div><div><label class="field" for="birthtime">出生时间</label><input id="birthtime" type="time" value="12:00"></div></div><button id="calc">生成简式四柱</button><div class="result" id="result">输入出生日期和时间后生成简式结果。</div><p class="muted">此处为简化算法演示，未精算节气交接、出生地经度及真太阳时；临近节气的排盘请用可靠万年历复核。</p></section>
+<section class="card"><div class="heading">今日自省 <span class="tiny">观时 · 察位 · 明心</span></div><div class="item"><label>留给自己的一问</label><strong id="question">我今天最值得推进的一件事是什么？</strong><p>用一个可完成的小行动，把想法落到现实。</p></div><p class="muted" style="margin-top:13px">易学术数存在不同流派和算法。这个初版优先实现美观、轻便、可离线打开；后续可再加入节气精算、农历转换、五行统计和更完整的命盘说明。</p></section>
+</div><div class="footer">玄枢 · 时序罗盘　｜　单文件 HTML · 无需联网<br>提示分数为简化五行关系参考值，方位用于文化意象提示，不构成科学预测，请勿作为医疗、投资或重大人生决定依据。</div></main>
+<script>
+const $=id=>document.getElementById(id);
+const gans=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const zis=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const dirs=[['北','坎','水'],['东北','艮','土'],['东','震','木'],['东南','巽','木'],['南','离','火'],['西南','坤','土'],['西','兑','金'],['西北','乾','金']];
+const elements=['木','火','土','金','水'];
+const elementOfStem=s=>['木','木','火','火','土','土','金','金','水','水'][s];
+const gen={'木':'火','火':'土','土':'金','金':'水','水':'木'};
+const ctrl={'木':'土','土':'水','水':'火','火':'金','金':'木'};
+const tips=[
+ ['稳中求进','先把手边的事情做好，再考虑扩张。','整理与沟通','勿急于定论'],
+ ['先理后动','把复杂任务拆成几个能完成的小步骤。','复盘与计划','避免分心'],
+ ['以和为贵','表达观点时，也给对方留出完整的空间。','协作与倾听','谨慎承诺'],
+ ['蓄力待发','不必追求每一步都立刻见效。','学习与打磨','别过度消耗'],
+ ['抓住重点','把精力放到最有价值的一件事上。','执行与收尾','防止冒进']
+];
+function mod(n,m){return(n%m+m)%m}
+function julian(y,m,d){if(m<=2){y--;m+=12}let a=Math.floor(y/100);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+2-a+Math.floor(a/4)-1524}
+function hourBranch(h){return mod(Math.floor((h+1)/2),12)}
+function yearPillar(y,m,d){let yy=y-(m<2||(m===2&&d<4)?1:0);return [mod(yy-4,10),mod(yy-4,12)]}
+function monthBranchApprox(m,d){
+ const md=m*100+d;
+ if(md>=204&&md<306)return 2;
+ if(md>=306&&md<405)return 3;
+ if(md>=405&&md<506)return 4;
+ if(md>=506&&md<606)return 5;
+ if(md>=606&&md<707)return 6;
+ if(md>=707&&md<808)return 7;
+ if(md>=808&&md<908)return 8;
+ if(md>=908&&md<1008)return 9;
+ if(md>=1008&&md<1107)return 10;
+ if(md>=1107&&md<1207)return 11;
+ if(md>=1207||md<106)return 0;
+ return 1;
+}
+function pillars(y,m,d,h){
+ const day=julian(y,m,d),[ys,yb]=yearPillar(y,m,d),ds=mod(day+9,10),db=mod(day+1,12),hb=hourBranch(h);
+ const mb=monthBranchApprox(m,d),monthOffset=mod(mb-2,12);
+ const ms=mod([2,4,6,8,0][mod(ys,5)]+monthOffset,10);
+ const hs=mod([0,2,4,6,8][mod(ds,5)]+hb,10);
+ return {ys,yb,ms,mb,ds,db,hs,hb};
+}
+function relation(a,b){
+ if(a===b)return 'same';
+ if(gen[a]===b)return 'birthGeneratesDay';
+ if(gen[b]===a)return 'dayGeneratesBirth';
+ if(ctrl[a]===b)return 'birthControlsDay';
+ if(ctrl[b]===a)return 'dayControlsBirth';
+ return 'same';
+}
+function directionFor(el,seed){
+ const map={'木':[2,3],'火':[4],'土':[1,5],'金':[6,7],'水':[0]};
+ const list=map[el]||[2];return dirs[list[mod(seed,list.length)]];
+}
+function update(){
+ const n=new Date(),y=n.getFullYear(),m=n.getMonth()+1,d=n.getDate(),h=n.getHours();
+ $('clock').textContent=n.toLocaleTimeString('zh-CN',{hour12:false});
+ $('date').textContent=n.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+ $('weekday').textContent=n.toLocaleDateString('zh-CN',{weekday:'long'});
+ const p=pillars(y,m,d,h),todayEl=elementOfStem(p.ds);
+ $('ganzhi').textContent=gans[p.ds]+zis[p.db]+'日';
+ let idx=mod(y*372+m*31+d,5),di=mod(y+m+d+Math.floor(h/2),8),score=60+mod(y*7+m*3+d+h,36),desc='每日参考仅用于文化体验与自我反思。';
+ const reflectionBank={
+  same:['我今天在哪件事上可以稳扎稳打，而不是急着求结果？','面对熟悉的问题，我有没有忽略新的可能？','今天有什么值得持续投入，而不必立刻看到回报？'],
+  birthGeneratesDay:['我今天表达或创造了什么？它是否真正传达了我的想法？','我愿意分享自己的精力，但有没有给自己留出余量？','今天哪个想法值得落成一个具体作品或行动？'],
+  dayGeneratesBirth:['今天我最需要补足哪一项知识、信息或支持？','遇到不确定的事时，我是否愿意先请教、先学习？','今天有什么资源可以帮助我把事情做得更稳妥？'],
+  birthControlsDay:['今天最值得由我主动推进的一件事是什么？','我是否把目标拆成了可以马上执行的小步骤？','我能怎样在保持主动的同时，也听见他人的意见？'],
+  dayControlsBirth:['今天有哪些细节需要我先核实，再做决定？','面对压力时，我能否先停一停，分清事实与猜测？','有什么事情不必急着定论，可以再观察一天？']
+ };
+ let reflectionQuestion=['我今天最值得推进的一件事是什么？','我是否把注意力放在真正重要的事情上？','今天有什么信息值得再核实一次？','我能用哪个小行动让计划前进一步？','我有没有给自己留出恢复精力的时间？'][idx];
+ const birth=$('birth').value;
+ if(birth){
+   const [by,bm,bd]=birth.split('-').map(Number),bh=Number(($('birthtime').value||'12:00').split(':')[0]);
+   const bp=pillars(by,bm,bd,bh),birthEl=elementOfStem(bp.ds),rel=relation(birthEl,todayEl);
+   const personalQuestions=reflectionBank[rel]||reflectionBank.same;
+   const reflectionSeed=by*37+bm*19+bd*11+bh*7+y*5+m*3+d;
+   reflectionQuestion=personalQuestions[mod(reflectionSeed,personalQuestions.length)];
+   const scoreMap={same:8,birthGeneratesDay:2,dayGeneratesBirth:6,birthControlsDay:4,dayControlsBirth:-5};
+   score=Math.max(55,Math.min(92,72+scoreMap[rel]+mod(p.db+bp.db,7)-3));
+   const advice={
+    same:['同气相应','适合把已有计划做扎实，稳步推进。','持续推进','避免固执己见'],
+    birthGeneratesDay:['有所输出','适合表达、创作或分享成果，注意留足精力。','创作与表达','别一次承诺太多'],
+    dayGeneratesBirth:['借势补能','适合学习、请教或整理资源，先补足信息。','学习与准备','避免仓促行动'],
+    birthControlsDay:['主动掌舵','适合拆解目标、安排优先级，把主动权握在手里。','计划与执行','注意沟通方式'],
+    dayControlsBirth:['先稳后动','先核实条件与细节，再决定是否加速。','核对与复盘','不必急着下结论']
+   }[rel];
+   $('key').textContent=advice[0];$('keydesc').textContent=advice[1];$('do').textContent=advice[2];$('avoid').textContent=advice[3];
+   const chosen=directionFor(todayEl,p.ds+bp.ds);
+   di=dirs.findIndex(x=>x[0]===chosen[0]);
+   desc='按出生日期与当日干支作简化五行关系参考，不代表现实事件概率。';
+ } else {
+   $('key').textContent=tips[idx][0];$('keydesc').textContent=tips[idx][1];$('do').textContent=tips[idx][2];$('avoid').textContent=tips[idx][3];
+ }
+ const chosenDir=dirs[di];
+ $('score').textContent=score;$('bar').style.width=score+'%';
+ $('way').textContent=chosenDir[0]+'方 · '+chosenDir[1]+chosenDir[2];
+ $('waydesc').textContent=({'北':'适合沉淀、休整与观察。','东北':'适合打基础、学习与准备。','东':'适合开启计划、整理思路。','东南':'适合协作、创作与调整。','南':'适合展示成果，但不必争强。','西南':'适合照顾长期目标。','西':'适合复盘、审美判断与取舍。','西北':'适合统筹安排、明确边界。'})[chosenDir[0]];
+ $('directionNote').textContent='今日参考方位：'+chosenDir[0]+'方（'+chosenDir[1]+'卦、'+chosenDir[2]+'行）。'+desc;
+ $('hour').textContent='当前时段：'+zis[hourBranch(h)]+'时。'+(h<11?'适合开启任务、整理思路。':h<15?'处理重点时也记得休息。':h<19?'适合复盘进度、完成收尾。':h<23?'适合回顾，避免过度透支。':'夜深宜收心，为休息留出空间。');
+ $('question').textContent=reflectionQuestion;
+ $('dirs').innerHTML='';
+ dirs.forEach((a,i)=>{const e=document.createElement('div'),ang=(i*45-90)*Math.PI/180;e.className='dir'+(i===di?' active':'');e.style.left=(50+Math.cos(ang)*37)+'%';e.style.top=(50+Math.sin(ang)*37)+'%';e.innerHTML='<b>'+a[0]+'</b><span>'+a[1]+'</span>';$('dirs').appendChild(e)});
+}
+$('calc').onclick=()=>{
+ const v=$('birth').value,t=$('birthtime').value||'12:00';
+ if(!v){$('result').textContent='请先填写出生日期。';return}
+ const [y,m,d]=v.split('-').map(Number),[h]=t.split(':').map(Number);
+ if(!y||!m||!d||m<1||m>12||d<1||d>31||h<0||h>23){$('result').textContent='日期或时间格式不正确，请重新填写。';return}
+ const p=pillars(y,m,d,h),dayEl=elementOfStem(p.ds);
+ $('result').innerHTML='<span style="color:#a9b3a6">年柱</span> <b style="color:#d8bd7c">'+gans[p.ys]+zis[p.yb]+'</b>　<span style="color:#a9b3a6">月柱</span> <b style="color:#d8bd7c">'+gans[p.ms]+zis[p.mb]+'</b><br><span style="color:#a9b3a6">日柱</span> <b style="color:#d8bd7c">'+gans[p.ds]+zis[p.db]+'</b>　<span style="color:#a9b3a6">时柱</span> <b style="color:#d8bd7c">'+gans[p.hs]+zis[p.hb]+'</b><br>日主：<b style="color:#d8bd7c">'+gans[p.ds]+'（'+dayEl+'）</b><br><span style="color:#a9b3a6">月柱按常见节气日期近似估算；未校正出生地、真太阳时及节气交接时刻。仅供文化学习。</span>';
+ update();
+};
+$('birth').addEventListener('change',update);$('birthtime').addEventListener('change',update);
+update();setInterval(update,1000);
+</script></body></html>
